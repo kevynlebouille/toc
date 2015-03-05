@@ -45,13 +45,16 @@ class UserController extends Controller
     {
         $user = $this->getUser();
 
-        $form = $this->createNewForm($user);
+        $form = $this->createNewForm($user, 'profile');
 
         $form->handleRequest($request);
 
         if ($form->isValid())
         {
-            $this->getDoctrine()->getEntityManager()->persist($user);
+            if ($password = $form->get('password')->getData()) {
+                $user->setPassword($password);
+            }
+
             $this->getDoctrine()->getEntityManager()->flush();
 
             $this->addFlash('success', 'Votre compte a bien été mis à jour.');
@@ -64,15 +67,16 @@ class UserController extends Controller
         ));
     }
 
-    private function createNewForm(User $user)
+    private function createNewForm(User $user, $mode = null)
     {
-        if ($user->getId())
+        if ($mode == 'profile')
         {
             $passwordType    = 'repeated';
             $passwordOptions = array(
                 'label'           => 'Mot de passe',
                 'type'            => 'password',
                 'invalid_message' => 'Les mots de passe doivent correspondre',
+                'mapped'          => false,
                 'error_bubbling'  => true,
             );
         }
