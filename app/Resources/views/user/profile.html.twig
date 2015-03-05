@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <h1 class="page-header">Mon profil</h1>
+
+  {{ include('_messages.html.twig') }}
+
+  {{ form_start(form, { attr: { novalidate: 'novalidate' } }) }}
+
+  {{ form_errors(form) }}
+
+  {{ form_row(form.username) }}
+
+  <div class="form-group">
+    {{ form_label(form.password.first, form.password.vars.label) }}
+    <div class="col-sm-10">
+        {{ form_widget(form.password.first) }}
+        {{ form_widget(form.password.second, { attr: { placeholder: 'Confirmation du mot de passe' } }) }}
+    </div>
+  </div>
+
+  {{ form_row(form.email) }}
+
+  {{ form_end(form) }}
+{% endblock %}
