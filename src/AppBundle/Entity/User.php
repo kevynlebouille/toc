@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -42,7 +43,19 @@ class User implements UserInterface, \Serializable
      * @ORM\Column(name="email", type="string", length=255)
      */
     private $email;
+    
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Project", mappedBy="owner")
+     */
+    private $ownedProjects;
 
+
+    public function __construct()
+    {
+        $this->ownedProjects = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -174,5 +187,38 @@ class User implements UserInterface, \Serializable
             // see section on salt below
             // $this->salt
         ) = unserialize($serialized);
+    }
+
+    /**
+     * Add ownedProject
+     *
+     * @param \AppBundle\Entity\Project $ownedProject
+     * @return User
+     */
+    public function addOwnedProject(\AppBundle\Entity\Project $ownedProject)
+    {
+        $this->ownedProjects[] = $ownedProject;
+
+        return $this;
+    }
+
+    /**
+     * Remove ownedProject
+     *
+     * @param \AppBundle\Entity\Project $ownedProject
+     */
+    public function removeOwnedProject(\AppBundle\Entity\Project $ownedProject)
+    {
+        $this->ownedProjects->removeElement($ownedProject);
+    }
+
+    /**
+     * Get ownedProjects
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getOwnedProjects()
+    {
+        return $this->ownedProjects;
     }
 }

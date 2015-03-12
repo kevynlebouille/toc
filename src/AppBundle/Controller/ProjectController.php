@@ -13,7 +13,16 @@ class ProjectController extends Controller
      */
     public function indexAction()
     {
-        return $this->render('project/index.html.twig');
+        $entities = $this
+            ->getDoctrine()
+            ->getManager()
+            ->getRepository('AppBundle:Project')
+            ->findAll()
+        ;
+
+        return $this->render('project/index.html.twig', array(
+            'entities' => $entities,
+        ));
     }
 
     /**

@@ -4,21 +4,21 @@
   <h1 class="page-header">Nos projets</h1>
 
   <div class="row">
-    {% for i in 0..9 %}
+    {% for entity in entities %}
       <div class="col-md-3">
         <div class="thumbnail">
           <img src="holder.js/100%x200" alt="100%x200">
           <div class="caption">
             <h3>
-              <a href="{{ path('project_show', { id: loop.index }) }}">Projet #{{ loop.index }}</a>
+              <a href="{{ path('project_show', { id: loop.index }) }}">{{ entity.title|truncate(15) }}</a>
             </h3>
 
             <div class="row">
-              <div class="col-md-6">
-                <small>par toto</small>
+              <div class="col-md-7">
+                <small>Par {{ entity.owner.username }}</small>
               </div>
-              <div class="col-md-6 text-right">
-                <small><span class="glyphicon glyphicon-tag" aria-hidden="true"></span> {{ random(['Jeu', 'Musique', 'Vidéo', 'Livre', 'Caritatif'])}}</small>
+              <div class="col-md-5 text-right">
+                <small><span class="glyphicon glyphicon-tag" aria-hidden="true"></span> {{ random(['Jeu', 'Musique', 'Vidéo', 'Livre', 'Caritatif']) }}</small>
               </div>
             </div>
 
@@ -26,12 +26,12 @@
 
             <div class="row">
               <div class="col-md-6">
-                <small><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span> {{ random(10000)|number_format(0, ',', ' ') }} €</small>
+                <small><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span> {{ entity.fundColl|number_format(0, ',', ' ') }} €</small>
               </div>
               <div class="col-md-6 text-right">
 
-                <small><span class="glyphicon glyphicon-heart" aria-hidden="true"></span> 209</small>
-                <small><span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span> J-19</small>
+                <small><span class="glyphicon glyphicon-heart" aria-hidden="true"></span> {{ random(50) }}</small>
+                <small><span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span> {{ (entity.countDown > 0) ? 'J-' ~ entity.countDown : 'Terminé' }}</small>
               </div>
             </div>
 

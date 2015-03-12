@@ -49,7 +49,7 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li class="{% if _route == 'homepage' %}active{% endif %}"><a href="{{ path('homepage') }}">Accueil</a></li>
-            <li class="{% if _route == 'project_index' %}active{% endif %}"><a href="{{ path('project_index') }}">Projets</a></li>
+            <li class="{% if _route starts with 'project_' %}active{% endif %}"><a href="{{ path('project_index') }}">Projets</a></li>
             <li class="{% if _route == 'contact' %}active{% endif %}"><a href="{{ path('contact') }}">Contact</a></li>
             <li class="{% if _route == 'about' %}active{% endif %}"><a href="{{ path('about') }}">A propos</a></li>
           </ul>
