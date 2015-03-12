@@ -26,12 +26,12 @@
 
             <div class="row">
               <div class="col-md-6">
-                <small><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span> {{ entity.fundColl|number_format(0, ',', ' ') }} €</small>
+                <small><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span> {{ entity.fundColl|currency }}</small>
               </div>
               <div class="col-md-6 text-right">
 
                 <small><span class="glyphicon glyphicon-heart" aria-hidden="true"></span> {{ random(50) }}</small>
-                <small><span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span> {{ (entity.countDown > 0) ? 'J-' ~ entity.countDown : 'Terminé' }}</small>
+                <small><span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span> {{ count_down(entity) }}</small>
               </div>
             </div>
 

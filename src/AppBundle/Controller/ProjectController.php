@@ -30,8 +30,24 @@ class ProjectController extends Controller
      */
     public function showAction($id)
     {
+        $entity = $this
+            ->getDoctrine()
+            ->getManager()
+            ->getRepository('AppBundle:Project')
+            ->find($id)
+        ;
+
         return $this->render('project/show.html.twig', array(
-            'id' => $id,
+            'entity' => $entity,
         ));
     }
 }
+
+
+
+
+
+
+
+
+

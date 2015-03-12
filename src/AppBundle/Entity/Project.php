@@ -92,6 +92,11 @@ class Project
         return $days;
     }
 
+    public function getFundProgress()
+    {
+        return floor(($this->fundColl / $this->fundObj) * 100);
+    }
+
     /**
      * Get id
      *
