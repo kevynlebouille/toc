@@ -1,5 +1,16 @@
 {% extends 'base.html.twig' %}
 
+{% set contribForm %}
+
+<form class="form-inline">
+  <div class="form-group">
+    <input type="number" class="form-control" placeholder="Montant" min="{{ entity.contribMinAmount }}" style="width:100px;text-align:right">
+  </div>
+  <button type="submit" class="btn btn-default">Valider</button>
+</form>
+
+{% endset %}
+
 {% block body %}
   <div class="row">
 
@@ -21,7 +32,7 @@
         <!-- Tab panes -->
         <div class="tab-content">
           <div role="tabpanel" class="tab-pane active" id="project-details">
-            <img src="holder.js/100%x200" alt="100%x200">
+            <img data-src="holder.js/100%x200" alt="100%x200">
             <p>{{ entity.description|nl2br }}</p>
           </div>
           <div role="tabpanel" class="tab-pane" id="project-news">...</div>
@@ -49,7 +60,7 @@
             <span class="glyphicon glyphicon-time" aria-hidden="true"></span> {{ count_down(entity, true) }}
           </div>
 
-          <button type="button" class="btn btn-primary btn-lg btn-block">Contribuer <small>à partir de {{ entity.contribMinAmount|currency }}</small></button>
+          <button type="button" class="btn btn-lg btn-block btn-info" data-toggle="popover" data-html="true" data-placement="top" title="Contribuer" data-content="{{ contribForm|e('html_attr') }}">Contribuer <small>à partir de {{ entity.contribMinAmount|currency }}</small></button>
         </div>
       </div>
 
@@ -60,7 +71,7 @@
         <div class="panel-body">
           <div class="row">
             <div class="col-md-4">
-              <img src="holder.js/100x100" alt="100x100" class="img-circle">
+              <img data-src="holder.js/100x100" alt="100x100" class="img-circle">
             </div>
             <div class="col-md-8">
               <h4><a href="#">{{ entity.owner.username }}</a></h4>

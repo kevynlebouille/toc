@@ -17,15 +17,18 @@ class UserController extends Controller
      */
     public function newAction(Request $request)
     {
-        $user = new User;
+        $entity = new User;
 
-        $form = $this->createNewForm($user);
+        $form = $this->createNewForm($entity);
 
         $form->handleRequest($request);
 
         if ($form->isValid())
         {
-            $this->getDoctrine()->getEntityManager()->persist($user);
+            $password = $form->get('password')->getData();
+            $this->setPassword($entity, $password);
+
+            $this->getDoctrine()->getEntityManager()->persist($entity);
             $this->getDoctrine()->getEntityManager()->flush();
 
             $this->addFlash('success', 'Votre compte a bien été créé.');
@@ -52,7 +55,7 @@ class UserController extends Controller
         if ($form->isValid())
         {
             if ($password = $form->get('password')->getData()) {
-                $user->setPassword($password);
+                $this->setPassword($entity, $password);
             }
 
             $this->getDoctrine()->getEntityManager()->flush();
@@ -67,7 +70,7 @@ class UserController extends Controller
         ));
     }
 
-    private function createNewForm(User $user, $mode = null)
+    private function createNewForm(User $entity, $mode = null)
     {
         if ($mode == 'profile')
         {
@@ -85,11 +88,12 @@ class UserController extends Controller
             $passwordType    = 'password';
             $passwordOptions = array(
                 'label'       => 'Mot de passe',
+                'mapped'      => false,
                 'constraints' => new NotBlank(array('message' => 'Ce champs est obligatoire')),
             );
         }
 
-        return $this->createFormBuilder($user)
+        return $this->createFormBuilder($entity)
             ->add('username', 'text', array(
                 'label'       => 'Identifiant',
                 'constraints' => new NotBlank(array('message' => 'Ce champs est obligatoire')),
@@ -107,5 +111,15 @@ class UserController extends Controller
             ))
             ->getForm()
         ;
+    }
+
+    private function setPassword(User $entity, $clearPassword)
+    {
+        $encodedPassword = $this
+            ->get('security.password_encoder')
+            ->encodePassword($entity, $clearPassword)
+        ;
+
+        $entity->setPassword($encodedPassword);
     }
 }

@@ -7,7 +7,7 @@
     {% for entity in entities %}
       <div class="col-md-3">
         <div class="thumbnail">
-          <img src="holder.js/100%x200" alt="100%x200">
+          <img data-src="holder.js/100%x200" alt="100%x200">
           <div class="caption">
             <h3>
               <a href="{{ path('project_show', { id: loop.index }) }}">{{ entity.title|truncate(15) }}</a>

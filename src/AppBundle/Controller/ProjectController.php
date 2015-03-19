@@ -5,6 +5,9 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints\NotBlank;
+
+use AppBundle\Entity\Project;
 
 class ProjectController extends Controller
 {
@@ -26,6 +29,45 @@ class ProjectController extends Controller
     }
 
     /**
+     * @Route("/project/new", name="project_new")
+     */
+    public function newAction(Request $request)
+    {
+        if (!$this->isGranted('ROLE_USER'))
+        {
+            $this->addFlash('warning', 'Merci de bien vous identifier pour déposer votre projet.');
+
+            return $this->redirectToRoute('_login');
+        }
+
+        $entity = new Project;
+        $entity->setContribMaxDate(new \DateTime());
+
+        $form = $this->createNewForm($entity);
+
+        $form->handleRequest($request);
+
+        if ($form->isValid())
+        {
+            $entity->setFundColl(0);
+            $entity->setOwner($this->getUser());
+
+            $this->getDoctrine()->getEntityManager()->persist($entity);
+            $this->getDoctrine()->getEntityManager()->flush();
+
+            $this->addFlash('success', 'Votre projet a bien été créé.');
+
+            return $this->redirectToRoute('project_show', array(
+                'id' => $entity->getId(),
+            ));
+        }
+
+        return $this->render('user/new.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
+
+    /**
      * @Route("/project/{id}", name="project_show")
      */
     public function showAction($id)
@@ -40,6 +82,40 @@ class ProjectController extends Controller
         return $this->render('project/show.html.twig', array(
             'entity' => $entity,
         ));
+    }
+
+    private function createNewForm(Project $entity)
+    {
+        return $this->createFormBuilder($entity)
+            ->add('title', 'text', array(
+                'label'       => 'Titre',
+                'constraints' => new NotBlank(array('message' => 'Ce champs est obligatoire')),
+            ))
+            ->add('description', 'textarea', array(
+                'label'       => 'Description',
+                'constraints' => new NotBlank(array('message' => 'Ce champs est obligatoire')),
+            ))
+            ->add('cover', 'file', array(
+                'label' => 'Couverture',
+            ))
+            ->add('fundObj', 'money', array(
+                'label'       => 'Objectif de fincancement',
+                'constraints' => new NotBlank(array('message' => 'Ce champs est obligatoire')),
+            ))
+            ->add('contribMinAmount', 'money', array(
+                'label'       => 'Montant minimum de participation',
+                'constraints' => new NotBlank(array('message' => 'Ce champs est obligatoire')),
+            ))
+            ->add('contribMaxDate', 'date', array(
+                'label'       => 'Date limite de participation',
+                'constraints' => new NotBlank(array('message' => 'Ce champs est obligatoire')),
+                'format'      => 'dd/MM/yyyy',
+            ))
+            ->add('submit', 'submit', array(
+                'label' => 'Valider',
+            ))
+            ->getForm()
+        ;
     }
 }
 
