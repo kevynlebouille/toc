@@ -35,13 +35,15 @@ class ProjectController extends Controller
     {
         if (!$this->isGranted('ROLE_USER'))
         {
-            $this->addFlash('warning', 'Merci de bien vous identifier pour déposer votre projet.');
+            $this->addFlash('warning', 'Merci de vous identifier pour déposer votre projet.');
 
             return $this->redirectToRoute('_login');
         }
 
         $entity = new Project;
         $entity->setContribMaxDate(new \DateTime());
+        $entity->setFundColl(0);
+        $entity->setOwner($this->getUser());
 
         $form = $this->createNewForm($entity);
 
@@ -49,9 +51,6 @@ class ProjectController extends Controller
 
         if ($form->isValid())
         {
-            $entity->setFundColl(0);
-            $entity->setOwner($this->getUser());
-
             $this->getDoctrine()->getEntityManager()->persist($entity);
             $this->getDoctrine()->getEntityManager()->flush();
 
@@ -62,7 +61,7 @@ class ProjectController extends Controller
             ));
         }
 
-        return $this->render('user/new.html.twig', array(
+        return $this->render('project/new.html.twig', array(
             'form' => $form->createView(),
         ));
     }
