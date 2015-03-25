@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Project
@@ -27,6 +28,13 @@ class Project
      * @ORM\Column(name="title", type="string", length=255)
      */
     private $title;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="subtitle", type="string", length=255, nullable=true)
+     */
+    private $subtitle;
 
     /**
      * @var string
@@ -78,6 +86,22 @@ class Project
      */
     private $owner;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Contrib", mappedBy="project")
+     */
+    private $contribs;
+
+    public function __construct()
+    {
+        $this->contribs = new ArrayCollection();
+    }
+
+    public function isOver()
+    {
+        return $this->contribMaxDate < new \DateTime;
+    }
 
     public function getCountDown()
     {
@@ -128,6 +152,29 @@ class Project
     public function getTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * Set subtitle
+     *
+     * @param string $subtitle
+     * @return Project
+     */
+    public function setSubtitle($subtitle)
+    {
+        $this->subtitle = $subtitle;
+
+        return $this;
+    }
+
+    /**
+     * Get subtitle
+     *
+     * @return string
+     */
+    public function getSubtitle()
+    {
+        return $this->subtitle;
     }
 
     /**

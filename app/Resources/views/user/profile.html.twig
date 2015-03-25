@@ -3,23 +3,82 @@
 {% block body %}
   <h1 class="page-header">Mon profil</h1>
 
-  {{ include('_messages.html.twig') }}
+  <div role="tabpanel">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active"><a href="#user-profile" aria-controls="user-profile" role="tab" data-toggle="tab">
+        Général</a></li>
+      <li role="presentation"><a href="#owned-projects" aria-controls="owned-projects" role="tab" data-toggle="tab">Projets déposés</a></li>
+      <li role="presentation"><a href="#funded-projects" aria-controls="funded-projects" role="tab" data-toggle="tab">Projects financés</a></li>
+    </ul>
 
-  {{ form_start(form, { attr: { novalidate: 'novalidate' } }) }}
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="user-profile">
 
-  {{ form_errors(form) }}
+        {{ include('_messages.html.twig') }}
 
-  {{ form_row(form.username) }}
+        {{ form_start(form, { attr: { novalidate: 'novalidate' } }) }}
 
-  <div class="form-group">
-    {{ form_label(form.password.first, form.password.vars.label) }}
-    <div class="col-sm-10">
-        {{ form_widget(form.password.first) }}
-        {{ form_widget(form.password.second, { attr: { placeholder: 'Confirmation du mot de passe' } }) }}
+        {{ form_errors(form) }}
+
+        {{ form_row(form.username) }}
+
+        <div class="form-group">
+          {{ form_label(form.password.first, form.password.vars.label) }}
+          <div class="col-sm-10">
+              {{ form_widget(form.password.first) }}
+              {{ form_widget(form.password.second, { attr: { placeholder: 'Confirmation du mot de passe' } }) }}
+          </div>
+        </div>
+
+        {{ form_row(form.email) }}
+
+        {{ form_end(form) }}
+
+      </div>
+      <div role="tabpanel" class="tab-pane" id="owned-projects">
+
+        <table class="table table-striped">
+          <thead>
+            <th>Projet</th>
+            <th>€ objectif</th>
+            <th>€ collectés</th>
+            <th>Date limite</th>
+          </thead>
+          <tbody>
+            {% for project in app.user.ownedProjects %}
+            <tr>
+              <td><a href="{{ path('project_show', { id: project.id }) }}">{{ project.title }}</a></td>
+              <td class="text-right">{{ project.fundObj|currency }}</td>
+              <td class="text-right">{{ project.fundColl|currency }}</td>
+              <td>{{ count_down(project) }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+      <div role="tabpanel" class="tab-pane" id="funded-projects">
+
+        <table class="table table-striped">
+          <thead>
+            <th>Projet</th>
+            <th>Montant</th>
+            <th>Enregistré le</th>
+          </thead>
+          <tbody>
+            {% for contrib in app.user.contribs %}
+            <tr>
+              <td><a href="{{ path('project_show', { id: contrib.project.id }) }}">{{ contrib.project.title }}</a></td>
+              <td class="text-right">{{ contrib.amount|currency }}</td>
+              <td>{{ contrib.createdAt|date('d/m/y') }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
     </div>
   </div>
-
-  {{ form_row(form.email) }}
-
-  {{ form_end(form) }}
 {% endblock %}

@@ -43,7 +43,7 @@ class User implements UserInterface, \Serializable
      * @ORM\Column(name="email", type="string", length=255)
      */
     private $email;
-    
+
     /**
      * @var ArrayCollection
      *
@@ -51,10 +51,17 @@ class User implements UserInterface, \Serializable
      */
     private $ownedProjects;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Contrib", mappedBy="user")
+     */
+    private $contribs;
 
     public function __construct()
     {
         $this->ownedProjects = new ArrayCollection();
+        $this->contribs      = new ArrayCollection();
     }
 
     /**
@@ -215,10 +222,20 @@ class User implements UserInterface, \Serializable
     /**
      * Get ownedProjects
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getOwnedProjects()
     {
         return $this->ownedProjects;
+    }
+
+    /**
+     * Get contribs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getContribs()
+    {
+        return $this->contribs;
     }
 }

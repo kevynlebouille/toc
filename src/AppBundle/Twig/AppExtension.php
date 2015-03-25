@@ -9,20 +9,14 @@ class AppExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            new \Twig_SimpleFilter(
-                'currency',
-                array($this, 'currency')
-            ),
+            new \Twig_SimpleFilter('currency', array($this, 'currency')),
         );
     }
 
     public function getFunctions()
     {
         return array(
-            new \Twig_SimpleFunction(
-                'count_down',
-                array($this, 'countDown')
-            ),
+            new \Twig_SimpleFunction('count_down', array($this, 'countDown')),
         );
     }
 
@@ -30,7 +24,7 @@ class AppExtension extends \Twig_Extension
     {
         return number_format($number, 0, ',', ' ') . ' €';
     }
-    
+
     public function countDown(Project $project, $verbose = false)
     {
         $days = $project->getCountDown();
@@ -43,7 +37,7 @@ class AppExtension extends \Twig_Extension
 
           return 'J-' . $days;
         }
-        
+
         if ($verbose) {
             return 'Objectif atteint !';
         }

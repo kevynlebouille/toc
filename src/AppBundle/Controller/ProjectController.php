@@ -6,8 +6,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Range;
 
 use AppBundle\Entity\Project;
+use AppBundle\Entity\Contrib;
 
 class ProjectController extends Controller
 {
@@ -40,8 +42,11 @@ class ProjectController extends Controller
             return $this->redirectToRoute('_login');
         }
 
+        $now = new \DateTime;
+        $nextMonth = $now->add(new \DateInterval('P1M'));
+
         $entity = new Project;
-        $entity->setContribMaxDate(new \DateTime());
+        $entity->setContribMaxDate($nextMonth);
         $entity->setFundColl(0);
         $entity->setOwner($this->getUser());
 
@@ -78,17 +83,63 @@ class ProjectController extends Controller
             ->find($id)
         ;
 
+        $contribForm = $this->createContribForm($entity);
+
         return $this->render('project/show.html.twig', array(
-            'entity' => $entity,
+            'entity'      => $entity,
+            'contribForm' => $contribForm->createView(),
+        ));
+    }
+
+    /**
+     * @Route("/project/{id}/contrib", name="project_contrib")
+     */
+    public function contribAction(Request $request, Project $entity)
+    {
+        if (!$this->isGranted('ROLE_USER'))
+        {
+            $this->addFlash('warning', 'Merci de vous identifier pour contribuer à ce projet.');
+
+            return $this->redirectToRoute('_login');
+        }
+
+        $form = $this->createContribForm($entity);
+        $form->handleRequest($request);
+
+        if ($form->isValid())
+        {
+            $amount = $form->get('amount')->getData();
+
+            $contrib = new Contrib;
+            $contrib->setAmount($amount);
+            $contrib->setUser($this->getUser());
+            $contrib->setProject($entity);
+            $contrib->setCreatedAt(new \DateTime);
+
+            $this->getDoctrine()->getManager()->persist($contrib);
+            $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('success', 'Votre participation de '.$this->get('app.twig.app_extension')->currency($amount).' a bien été enregistrée.');
+        }
+        else {
+            $this->addFlash('danger', (string) $form->getErrors());
+        }
+
+        return $this->redirectToRoute('project_show', array(
+            'id' => $entity->getId(),
         ));
     }
 
     private function createNewForm(Project $entity)
     {
-        return $this->createFormBuilder($entity)
+        return $this
+            ->createFormBuilder($entity)
             ->add('title', 'text', array(
                 'label'       => 'Titre',
                 'constraints' => new NotBlank(array('message' => 'Ce champs est obligatoire')),
+            ))
+            ->add('subtitle', 'text', array(
+                'label' => 'Sous-titre',
             ))
             ->add('description', 'textarea', array(
                 'label'       => 'Description',
@@ -112,6 +163,28 @@ class ProjectController extends Controller
             ))
             ->add('submit', 'submit', array(
                 'label' => 'Valider',
+            ))
+            ->getForm()
+        ;
+    }
+
+    private function createContribForm(Project $entity)
+    {
+        $data = array('amount' => $entity->getContribMinAmount());
+
+        return $this
+            ->createFormBuilder($data)
+            ->add('amount', 'text', array(
+                'label'          => false,
+                'error_bubbling' => true,
+                'constraints'    => array(
+                    new NotBlank(array('message' => 'Ce champs est obligatoire')),
+                    new Range(array(
+                        'min' => $entity->getContribMinAmount(),
+                        'minMessage' => 'Montant minimum de {{ limit }} €',
+                        'invalidMessage' => 'Montant incorrect',
+                    )),
+                ),
             ))
             ->getForm()
         ;

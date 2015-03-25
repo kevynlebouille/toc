@@ -66,7 +66,8 @@ class UserController extends Controller
         }
 
         return $this->render('user/profile.html.twig', array(
-            'form' => $form->createView(),
+            'form'          => $form->createView(),
+            'ownedProjects' => $user->getOwnedProjects(),
         ));
     }
 
@@ -93,7 +94,8 @@ class UserController extends Controller
             );
         }
 
-        return $this->createFormBuilder($entity)
+        return $this
+            ->createFormBuilder($entity)
             ->add('username', 'text', array(
                 'label'       => 'Identifiant',
                 'constraints' => new NotBlank(array('message' => 'Ce champs est obligatoire')),
