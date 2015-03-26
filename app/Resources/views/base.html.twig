@@ -60,9 +60,9 @@
               <ul class="dropdown-menu" role="menu">
                 {% if is_granted('ROLE_USER') %}
                   <li><a href="{{ path('user_profile') }}">Mon profil</a></li>
-                  <li><a href="{{ path('_logout') }}">Déconnexion</a></li>
+                  <li><a href="{{ path('logout') }}">Déconnexion</a></li>
                 {% else %}
-                  <li><a href="{{ path('_login') }}">S'identifier</a></li>
+                  <li><a href="{{ path('login') }}">S'identifier</a></li>
                   <li><a href="{{ path('user_new') }}">S'inscrire</a></li>
                 {% endif %}
               </ul>

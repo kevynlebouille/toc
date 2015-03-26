@@ -39,10 +39,10 @@ security:
         default:
             pattern:   ^/
             form_login:
-                check_path: _security_check
-                login_path: _login
+                check_path: security_check
+                login_path: login
             logout:
-                path:   _logout
+                path:   logout
                 target: homepage
             anonymous: ~
             #http_basic:

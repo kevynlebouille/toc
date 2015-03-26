@@ -33,7 +33,7 @@ class UserController extends Controller
 
             $this->addFlash('success', 'Votre compte a bien été créé.');
 
-            return $this->redirectToRoute('_login');
+            return $this->redirectToRoute('login');
         }
 
         return $this->render('user/new.html.twig', array(

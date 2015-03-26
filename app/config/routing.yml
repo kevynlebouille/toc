@@ -2,8 +2,8 @@ app:
     resource: @AppBundle/Controller/
     type:     annotation
 
-_security_check:
+security_check:
     pattern: /login_check
 
-_logout:
+logout:
     pattern: /logout

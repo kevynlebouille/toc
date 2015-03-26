@@ -94,16 +94,16 @@ class ProjectController extends Controller
     /**
      * @Route("/project/{id}/contrib", name="project_contrib")
      */
-    public function contribAction(Request $request, Project $entity)
+    public function contribAction(Request $request, Project $project)
     {
         if (!$this->isGranted('ROLE_USER'))
         {
             $this->addFlash('warning', 'Merci de vous identifier pour contribuer à ce projet.');
 
-            return $this->redirectToRoute('_login');
+            return $this->redirectToRoute('login');
         }
 
-        $form = $this->createContribForm($entity);
+        $form = $this->createContribForm($project);
         $form->handleRequest($request);
 
         if ($form->isValid())
@@ -113,8 +113,12 @@ class ProjectController extends Controller
             $contrib = new Contrib;
             $contrib->setAmount($amount);
             $contrib->setUser($this->getUser());
-            $contrib->setProject($entity);
+            $contrib->setProject($project);
             $contrib->setCreatedAt(new \DateTime);
+
+            $project->setFundColl(
+                $project->getFundColl() + $amount
+            );
 
             $this->getDoctrine()->getManager()->persist($contrib);
             $this->getDoctrine()->getManager()->flush();
@@ -126,7 +130,7 @@ class ProjectController extends Controller
         }
 
         return $this->redirectToRoute('project_show', array(
-            'id' => $entity->getId(),
+            'id' => $project->getId(),
         ));
     }
 
@@ -190,12 +194,3 @@ class ProjectController extends Controller
         ;
     }
 }
-
-
-
-
-
-
-
-
-
