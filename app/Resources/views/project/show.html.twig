@@ -42,10 +42,11 @@
           <div role="tabpanel" class="tab-pane" id="project-news">...</div>
 
           <div role="tabpanel" class="tab-pane" id="project-comments">
+            <hr>
             {% for comment in entity.comments %}
             <div class="media">
               <div class="media-left">
-                <img class="media-object" data-src="holder.js/50x50" alt="50x50">
+                <img class="media-object" src="{{ comment.user.email|gravatar(50) }}" alt="50x50">
               </div>
               <div class="media-body">
                 <h4 class="media-heading">Par {{ comment.user.username }} <small>{{ comment.createdAt|date('d/m/Y à H:i:s') }}</small></h4>
@@ -93,7 +94,7 @@
         <div class="panel-body">
           <div class="row">
             <div class="col-md-4">
-              <img data-src="holder.js/100x100" alt="100x100" class="img-circle">
+              <img src="{{ entity.owner.email|gravatar(100) }}" alt="100x100" class="img-circle">
             </div>
             <div class="col-md-8">
               <h4><a href="#">{{ entity.owner.username }}</a></h4>
