@@ -28,7 +28,7 @@
         <ul class="nav nav-tabs" role="tablist">
           <li role="presentation" class="active"><a href="#project-details" aria-controls="project-details" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-blackboard" aria-hidden="true"></span> Accueil</a></li>
           <li role="presentation"><a href="#project-news" aria-controls="project-news" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span> {{ random(10) }} news</a></li>
-          <li role="presentation"><a href="#project-comments" aria-controls="project-comments" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> {{ random(100) }} commentaires</a></li>
+          <li role="presentation"><a href="#project-comments" aria-controls="project-comments" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> {{ entity.comments|length }} commentaires</a></li>
           <li role="presentation"><a href="#project-contribs" aria-controls="project-contribs" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{ random(50) }} contributeurs</a></li>
         </ul>
 
@@ -38,8 +38,23 @@
             <img data-src="holder.js/100%x200" alt="100%x200">
             <p>{{ entity.description|nl2br }}</p>
           </div>
+
           <div role="tabpanel" class="tab-pane" id="project-news">...</div>
-          <div role="tabpanel" class="tab-pane" id="project-comments">...</div>
+
+          <div role="tabpanel" class="tab-pane" id="project-comments">
+            {% for comment in entity.comments %}
+            <div class="media">
+              <div class="media-left">
+                <img class="media-object" data-src="holder.js/50x50" alt="50x50">
+              </div>
+              <div class="media-body">
+                <h4 class="media-heading">Par {{ comment.user.username }} <small>{{ comment.createdAt|date('d/m/Y à H:i:s') }}</small></h4>
+                <p>{{ comment.body|nl2br }}</p>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
           <div role="tabpanel" class="tab-pane" id="project-contribs">...</div>
         </div>
       </div>
