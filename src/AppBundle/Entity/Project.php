@@ -93,9 +93,17 @@ class Project
      */
     private $contribs;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Comment", mappedBy="project")
+     */
+    private $comments;
+
     public function __construct()
     {
         $this->contribs = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function isOver()
@@ -336,5 +344,25 @@ class Project
     public function getOwner()
     {
         return $this->owner;
+    }
+
+    /**
+     * Get contribs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getContribs()
+    {
+        return $this->contribs;
+    }
+
+    /**
+     * Get comments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getComments()
+    {
+        return $this->comments;
     }
 }
